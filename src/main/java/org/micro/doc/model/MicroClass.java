@@ -1,54 +1,112 @@
 package org.micro.doc.model;
 
+import com.sun.javadoc.ClassDoc;
+import com.sun.tools.javac.code.TypeTag;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.lang.reflect.Modifier;
 import java.util.List;
 
+/**
+ * [Title]
+ * <p>
+ * [intro]
+ *
+ * @author [author]
+ * @version [version]
+ * @serial [serial]
+ * @apiNote [apiNote]
+ * @implNote [implNote]
+ * @implSpec [implSpec]
+ * @see [see]
+ * @since [since]
+ * deprecated [deprecated]
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class MicroClass implements Serializable {
+
     /**
-     * 名称
+     * Class Name
      */
     private String name;
     /**
-     * 标题
+     * Class qualified name
+     */
+    private String qualifiedName;
+    /**
+     * Class doc package name
+     */
+    private String packageName;
+
+    /**
+     * Class doc title
      */
     private String title;
     /**
-     * 包名
-     */
-    private String packageName;
+     * Class doc intro
+     **/
+    private String intro;
+
     /**
-     * 作者
+     * Class doc {@author}
      */
     private String author;
     /**
-     * 版本号
+     * Class doc {@version}
      */
     private String version;
     /**
-     * API笔记
+     * Class doc {@serial}
+     */
+    private String serial;
+    /**
+     * Class doc {@apiNote}
      */
     private String apiNote;
     /**
-     * 日期
+     * Class doc {@implNote}
+     */
+    private String implNote;
+    /**
+     * Class doc {@implSpec}
+     */
+    private String implSpec;
+    /**
+     * Class doc {@see}
+     */
+    private String see;
+    /**
+     * Class doc {@since}
      */
     private String since;
     /**
-     * 是否舍弃
+     * Class doc {@deprecated}
      */
-    private Boolean deprecated;
+    private String deprecated;
+
     /**
-     * 是否是接口
+     * Class doc has deprecated
      */
-    private Boolean interfaced;
+    private Boolean isDeprecated;
+    private Boolean isClass;
+    private Boolean isOrdinaryClass;
+    private Boolean isEnum;
+    private Boolean isInterface;
+    private Boolean isException;
+    private Boolean isError;
+    private Boolean isThrowable;
+    private Boolean isAbstract;
+    private Boolean isSynthetic;
+    private Boolean isIncluded;
+
     /**
-     * 方法
+     * Class method
      */
     private List<MicroMethod> methods;
+
 }

@@ -3,10 +3,10 @@ package org.micro.doc;
 import com.alibaba.fastjson.JSON;
 import com.sun.javadoc.*;
 import com.sun.source.doctree.DocTree.Kind;
+import com.sun.tools.javadoc.ClassDocImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.micro.doc.model.*;
-import org.micro.test.core.model.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,7 +25,7 @@ import java.util.Map;
 public class MicroDoclet extends Doclet {
 
     /**
-     * 启动入口
+     * Micro doclet start
      *
      * @param root {@link RootDoc}
      * @return {@link Boolean}
@@ -59,7 +59,7 @@ public class MicroDoclet extends Doclet {
         // 写入隐藏文件
         if (!lines.isEmpty()) {
             try {
-                FileUtils.writeLines(new File(MicroMain.PATH), StandardCharsets.UTF_8.name(), lines, false);
+                FileUtils.writeLines(new File(MicroDocMain.PATH), StandardCharsets.UTF_8.name(), lines, false);
             } catch (IOException e) {
                 log.error("The write lines is exception", e);
             }
@@ -77,34 +77,66 @@ public class MicroDoclet extends Doclet {
     private static MicroClass buildClass(ClassDoc classDoc) {
         MicroClass microClass = new MicroClass();
         microClass.setName(classDoc.name());
-        microClass.setTitle(classDoc.commentText());
-        microClass.setMethods(new ArrayList<>());
+        microClass.setQualifiedName(classDoc.qualifiedName());
         microClass.setPackageName(classDoc.toString().replace(Constants.DOT + classDoc.name(), Constants.NULL_STR));
 
-        // 设置作者
+        String commentText = classDoc.commentText();
+        microClass.setTitle(commentText);
+        microClass.setIntro(commentText);
+
         Tag[] authorTags = classDoc.tags(Kind.AUTHOR.tagName);
         if (authorTags.length > 0) {
             microClass.setAuthor(authorTags[0].text());
         }
-        // 设置版本号
         Tag[] versionTags = classDoc.tags(Kind.VERSION.tagName);
         if (versionTags.length > 0) {
             microClass.setVersion(versionTags[0].text());
         }
-        // 设置API笔记
-        Tag[] apiNoteTags = classDoc.tags(Constants.API_NOTE_TAG);
+        Tag[] serialTags = classDoc.tags(Kind.SERIAL.tagName);
+        if (serialTags.length > 0) {
+            microClass.setSerial(serialTags[0].text());
+        }
+        Tag[] apiNoteTags = classDoc.tags(MicroKind.API_NOTE.tagName);
         if (apiNoteTags.length > 0) {
             microClass.setApiNote(apiNoteTags[0].text());
         }
-        // 设置日期
+        Tag[] implNoteTags = classDoc.tags(MicroKind.IMPL_NOTE.tagName);
+        if (implNoteTags.length > 0) {
+            microClass.setImplNote(implNoteTags[0].text());
+        }
+        Tag[] implSpecTags = classDoc.tags(MicroKind.IMPL_SPEC.tagName);
+        if (implSpecTags.length > 0) {
+            microClass.setImplSpec(implSpecTags[0].text());
+        }
+        Tag[] seeTags = classDoc.tags(Kind.SEE.tagName);
+        if (seeTags.length > 0) {
+            microClass.setSee(seeTags[0].text());
+        }
         Tag[] sinceTags = classDoc.tags(Kind.SINCE.tagName);
         if (sinceTags.length > 0) {
             microClass.setSince(sinceTags[0].text());
         }
+        Tag[] deprecatedTags = classDoc.tags(Kind.DEPRECATED.tagName);
+        if (deprecatedTags.length > 0) {
+            microClass.setDeprecated(deprecatedTags[0].text());
+        }
 
-        // 校验是否被舍弃
-        microClass.setDeprecated(isDeprecated(classDoc.annotations()));
+        microClass.setIsDeprecated(isDeprecated(classDoc.annotations()));
+        microClass.setIsClass(classDoc.isClass());
+        microClass.setIsOrdinaryClass(classDoc.isOrdinaryClass());
+        microClass.setIsEnum(classDoc.isEnum());
+        microClass.setIsInterface(classDoc.isInterface());
+        microClass.setIsException(classDoc.isException());
+        microClass.setIsError(classDoc.isError());
+        microClass.setIsAbstract(classDoc.isAbstract());
+        microClass.setIsIncluded(classDoc.isIncluded());
+        if (classDoc instanceof ClassDocImpl) {
+            ClassDocImpl implClassDoc = (ClassDocImpl) classDoc;
+            microClass.setIsThrowable(implClassDoc.isThrowable());
+            microClass.setIsSynthetic(implClassDoc.isSynthetic());
+        }
 
+        microClass.setMethods(new ArrayList<>());
         return microClass;
     }
 

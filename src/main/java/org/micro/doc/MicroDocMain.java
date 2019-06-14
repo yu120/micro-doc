@@ -19,17 +19,17 @@ import java.util.List;
  * @author lry
  */
 @Slf4j
-public class MicroMain {
+public class MicroDocMain {
 
     public static String PATH = "";
 
     public static void main(String[] args) {
-        execute();
+        String realRootPath = MicroDocMain.class.getResource("/").getPath();
+        realRootPath = realRootPath.substring(0, realRootPath.lastIndexOf("/target/classes"));
+        execute(realRootPath);
     }
 
-    public static void execute() {
-        String realRootPath = MicroMain.class.getResource("/").getPath();
-        realRootPath = realRootPath.substring(0, realRootPath.lastIndexOf("/target/classes"));
+    public static void execute(String realRootPath) {
         String realPath = realRootPath + "/src/main/java";
         log.info("The real path is: {}", realPath);
         PATH = realRootPath + Constants.TARGET_CLASSES;
