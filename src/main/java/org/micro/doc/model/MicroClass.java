@@ -1,8 +1,7 @@
 package org.micro.doc.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.io.Serializable;
 import java.util.List;
@@ -13,8 +12,7 @@ import java.util.List;
  * @author lry
  */
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
+@ToString
 public class MicroClass implements Serializable {
 
     /**
