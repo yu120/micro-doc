@@ -1,29 +1,16 @@
 package org.micro.doc.model;
 
-import com.sun.javadoc.ClassDoc;
-import com.sun.tools.javac.code.TypeTag;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.lang.reflect.Modifier;
 import java.util.List;
 
 /**
- * [Title]
- * <p>
- * [intro]
+ * Micro Class Model
  *
- * @author [author]
- * @version [version]
- * @serial [serial]
- * @apiNote [apiNote]
- * @implNote [implNote]
- * @implSpec [implSpec]
- * @see [see]
- * @since [since]
- * deprecated [deprecated]
+ * @author lry
  */
 @Data
 @NoArgsConstructor
