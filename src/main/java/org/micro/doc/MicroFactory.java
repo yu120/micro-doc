@@ -47,6 +47,7 @@ public class MicroFactory {
         MicroClass microClass = new MicroClass();
         microClass.setName(classDoc.name());
         microClass.setQualifiedName(classDoc.qualifiedName());
+        microClass.setSignature(classDoc.qualifiedName());
         microClass.setPackageName(classDoc.toString().replace(Constants.DOT + classDoc.name(), Constants.NULL_STR));
 
         String commentText = classDoc.commentText();

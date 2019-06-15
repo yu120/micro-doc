@@ -24,6 +24,10 @@ public class MicroClass implements Serializable {
      */
     private String qualifiedName;
     /**
+     * Class doc signature
+     */
+    private String signature;
+    /**
      * Class doc package name
      */
     private String packageName;
