@@ -21,9 +21,9 @@ public class MicroDocPlugin extends AbstractMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        System.out.println("1===>" + projectPath);
-        MicroDoc.execute(projectPath);
-        System.out.println("2===>" + projectPath);
+        System.out.println("The starting generate micro doc...");
+        boolean flag = MicroDoc.execute(projectPath);
+        System.out.println("The generated micro doc result: " + (flag ? "success" : "failure"));
     }
 
 }
