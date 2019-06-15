@@ -82,6 +82,7 @@ public class MicroClass implements Serializable {
     private Boolean isOrdinaryClass = false;
     private Boolean isEnum = false;
     private Boolean isInterface = false;
+    private Boolean isAnnotation = false;
     private Boolean isException = false;
     private Boolean isError = false;
     private Boolean isThrowable = false;

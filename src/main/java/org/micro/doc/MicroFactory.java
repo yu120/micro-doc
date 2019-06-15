@@ -98,8 +98,9 @@ public class MicroFactory {
         microClass.setIsDeprecated(this.isDeprecated(classDoc.annotations()));
         microClass.setIsClass(classDoc.isClass());
         microClass.setIsOrdinaryClass(classDoc.isOrdinaryClass());
-        microClass.setIsEnum(classDoc.isEnum());
-        microClass.setIsInterface(classDoc.isInterface());
+        microClass.setIsEnum(classDocClass.isEnum());
+        microClass.setIsInterface(classDocClass.isInterface());
+        microClass.setIsAnnotation(classDocClass.isAnnotation());
         microClass.setIsException(classDoc.isException());
         microClass.setIsError(classDoc.isError());
         microClass.setIsAbstract(classDoc.isAbstract());
@@ -113,11 +114,6 @@ public class MicroFactory {
         // Step 2: 获取方法
         List<MicroMethod> methods = new ArrayList<>();
         for (MethodDoc methodDoc : classDoc.methods()) {
-            // 是否只扫描public的方法
-            if (MicroDoc.SCAN_PUBLIC && !methodDoc.isPublic()) {
-                continue;
-            }
-
             String methodId = methodDoc.toString().replace(" ", "");
             Method method = methodMap.get(methodId);
 

@@ -21,10 +21,6 @@ import java.util.List;
 public class MicroDoc {
 
     public static String PATH = "";
-    /**
-     * 是否只扫描Public方法
-     */
-    public static boolean SCAN_PUBLIC = true;
 
     /**
      * dddd
