@@ -35,7 +35,7 @@ public class MicroDoc {
         System.out.println(execute(realRootPath) ? "成功" : "失败");
     }
 
-    private static boolean execute(String realRootPath) {
+    public static boolean execute(String realRootPath) {
         String realPath = realRootPath + "/src/main/java";
         log.info("The real path is: {}", realPath);
         PATH = realRootPath + Constants.TARGET_CLASSES;

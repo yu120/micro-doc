@@ -6,7 +6,6 @@ import com.sun.tools.javadoc.ClassDocImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.micro.doc.model.*;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -45,10 +44,6 @@ public class MicroFactory {
      * @return {@link MicroClass}
      */
     private MicroClass buildClass(ClassDoc classDoc) {
-        Class<?> classDocClass = this.getClassDocClass(classDoc);
-        Map<String, Method> methodMap = getClassDocMethods(classDocClass);
-        String classDocClassName = classDocClass.getName();
-
         MicroClass microClass = new MicroClass();
         microClass.setName(classDoc.name());
         microClass.setQualifiedName(classDoc.qualifiedName());
@@ -98,9 +93,9 @@ public class MicroFactory {
         microClass.setIsDeprecated(this.isDeprecated(classDoc.annotations()));
         microClass.setIsClass(classDoc.isClass());
         microClass.setIsOrdinaryClass(classDoc.isOrdinaryClass());
-        microClass.setIsEnum(classDocClass.isEnum());
-        microClass.setIsInterface(classDocClass.isInterface());
-        microClass.setIsAnnotation(classDocClass.isAnnotation());
+        microClass.setIsEnum(classDoc.isEnum());
+        microClass.setIsInterface(classDoc.isInterface());
+        microClass.setIsAnnotation(classDoc.isAnnotationType());
         microClass.setIsException(classDoc.isException());
         microClass.setIsError(classDoc.isError());
         microClass.setIsAbstract(classDoc.isAbstract());
@@ -114,11 +109,8 @@ public class MicroFactory {
         // Step 2: 获取方法
         List<MicroMethod> methods = new ArrayList<>();
         for (MethodDoc methodDoc : classDoc.methods()) {
-            String methodId = methodDoc.toString().replace(" ", "");
-            Method method = methodMap.get(methodId);
-
             // 构建MicroMethod模型
-            MicroMethod microMethod = this.buildMethod(method, methodDoc);
+            MicroMethod microMethod = this.buildMethod(methodDoc);
             methods.add(microMethod);
         }
         microClass.setMethods(methods);
@@ -128,12 +120,11 @@ public class MicroFactory {
     /**
      * 构建方法模型
      *
-     * @param method    {@link Method}
      * @param methodDoc {@link MethodDoc}
      * @return {@link MicroMethod}
      * @serialData
      */
-    private MicroMethod buildMethod(Method method, MethodDoc methodDoc) {
+    private MicroMethod buildMethod(MethodDoc methodDoc) {
         MicroMethod microMethod = new MicroMethod();
         microMethod.setName(methodDoc.name());
         microMethod.setQualifiedName(methodDoc.qualifiedName());
@@ -183,20 +174,19 @@ public class MicroFactory {
         // Step 3: 读取可能会抛出的异常
         microMethod.setReturnInfo(this.readReturn(methodDoc));
         // Step 4: 读取可能会抛出的异常
-        microMethod.setThrowses(this.readThrows(method, methodDoc));
+        microMethod.setThrowses(this.readThrows(methodDoc));
         // Step 5: 读取参数描述
-        microMethod.setParameters(this.readParameters(method, methodDoc));
+        microMethod.setParameters(this.readParameters(methodDoc));
         return microMethod;
     }
 
     /**
      * 读取参数列表
      *
-     * @param method    {@link Method}
      * @param methodDoc {@link MethodDoc}
      * @return {@link List<MicroParameter>}
      */
-    private List<MicroParameter> readParameters(Method method, MethodDoc methodDoc) {
+    private List<MicroParameter> readParameters(MethodDoc methodDoc) {
         List<MicroParameter> parameters = new ArrayList<>();
 
         // 读取参数描述
@@ -256,11 +246,10 @@ public class MicroFactory {
     /**
      * 读取可能抛出的异常
      *
-     * @param method    {@link Method}
      * @param methodDoc {@link MethodDoc}
      * @return {@link List<MicroThrows>}
      */
-    private List<MicroThrows> readThrows(Method method, MethodDoc methodDoc) {
+    private List<MicroThrows> readThrows(MethodDoc methodDoc) {
         List<MicroThrows> microThrowsList = new ArrayList<>();
 
         Map<String, String> exceptionMap = new HashMap<>();
@@ -271,11 +260,11 @@ public class MicroFactory {
             }
         }
 
-        for (Class<?> clz : method.getExceptionTypes()) {
+        for (Type type : methodDoc.thrownExceptionTypes()) {
             MicroThrows microThrows = new MicroThrows();
-            microThrows.setName(clz.getSimpleName());
-            microThrows.setQualifiedName(clz.getName());
-            microThrows.setTitle(exceptionMap.get(clz.getSimpleName()));
+            microThrows.setName(type.typeName());
+            microThrows.setQualifiedName(type.qualifiedTypeName());
+            microThrows.setTitle(exceptionMap.get(type.typeName()));
             microThrowsList.add(microThrows);
         }
 
@@ -299,40 +288,6 @@ public class MicroFactory {
         }
 
         return false;
-    }
-
-    private Class<?> getClassDocClass(ClassDoc classDoc) {
-        String className = classDoc.qualifiedTypeName();
-        try {
-            return Class.forName(className, true, this.getClass().getClassLoader());
-        } catch (Exception e) {
-            throw new IllegalArgumentException(className, e);
-        }
-    }
-
-    private Class<?> getMethodDocClass(ClassDoc classDoc) {
-        String className = classDoc.qualifiedTypeName();
-        try {
-            return Class.forName(className);
-        } catch (Exception e) {
-            throw new IllegalArgumentException(className, e);
-        }
-    }
-
-    private Map<String, Method> getClassDocMethods(Class<?> classDocClass) {
-        Map<String, Method> methodMap = new HashMap<>();
-        String classDocClassName = classDocClass.getName();
-        Method[] classDocMethods = classDocClass.getDeclaredMethods();
-        if (classDocMethods != null) {
-            for (Method method : classDocMethods) {
-                String methodName = method.toString();
-                methodName = methodName.substring(0, methodName.lastIndexOf(")") + 1);
-                methodName = methodName.substring(methodName.lastIndexOf(" ") + 1);
-                methodMap.put(methodName.replace(" ", ""), method);
-            }
-        }
-
-        return methodMap;
     }
 
     private String getTitle(String commentText) {
