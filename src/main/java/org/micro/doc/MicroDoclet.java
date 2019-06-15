@@ -32,6 +32,7 @@ public class MicroDoclet extends Doclet {
      */
     public static boolean start(RootDoc root) {
         List<String> lines = new ArrayList<>();
+        List<MicroClass> microClasses = new ArrayList<>();
         ClassDoc[] classes = root.classes();
         for (ClassDoc classDoc : classes) {
             // 构建MicroClass模型
@@ -52,10 +53,11 @@ public class MicroDoclet extends Doclet {
                 microMethod.setParameters(readParameters(methodDoc));
                 microClass.getMethods().add(microMethod);
             }
-
+            microClasses.add(microClass);
             lines.add(JSON.toJSONString(microClass));
         }
 
+        System.out.println(JSON.toJSONString(microClasses));
         // 写入隐藏文件
         if (!lines.isEmpty()) {
             try {
