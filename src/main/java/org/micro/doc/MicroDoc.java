@@ -18,7 +18,7 @@ import java.util.List;
  * @author lry
  */
 @Slf4j
-public class Main {
+public class MicroDoc {
 
     public static String PATH = "";
     /**
@@ -34,7 +34,7 @@ public class Main {
      * @throws NullPointerException bbb
      */
     public static void main(String[] args) throws Exception, NullPointerException {
-        String realRootPath = Main.class.getResource("/").getPath();
+        String realRootPath = MicroDoc.class.getResource("/").getPath();
         realRootPath = realRootPath.substring(0, realRootPath.lastIndexOf("/target/classes"));
         execute(realRootPath);
     }
