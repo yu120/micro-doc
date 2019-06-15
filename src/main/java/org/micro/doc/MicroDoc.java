@@ -26,6 +26,13 @@ public class MicroDoc {
      */
     public static boolean SCAN_PUBLIC = true;
 
+    /**
+     * dddd
+     *
+     * @param args
+     * @throws Exception            aaa
+     * @throws NullPointerException bbb
+     */
     public static void main(String[] args) throws Exception, NullPointerException {
         String realRootPath = MicroDoc.class.getResource("/").getPath();
         realRootPath = realRootPath.substring(0, realRootPath.lastIndexOf("/target/classes"));

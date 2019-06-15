@@ -187,7 +187,7 @@ public class MicroFactory {
         // Step 3: 读取可能会抛出的异常
         microMethod.setReturnInfo(this.readReturn(methodDoc));
         // Step 4: 读取可能会抛出的异常
-        microMethod.setThrowses(this.readThrows(methodDoc));
+        microMethod.setThrowses(this.readThrows(method, methodDoc));
         // Step 5: 读取参数描述
         microMethod.setParameters(this.readParameters(method, methodDoc));
         return microMethod;
@@ -260,24 +260,27 @@ public class MicroFactory {
     /**
      * 读取可能抛出的异常
      *
+     * @param method    {@link Method}
      * @param methodDoc {@link MethodDoc}
      * @return {@link List<MicroThrows>}
      */
-    private List<MicroThrows> readThrows(MethodDoc methodDoc) {
+    private List<MicroThrows> readThrows(Method method, MethodDoc methodDoc) {
         List<MicroThrows> microThrowsList = new ArrayList<>();
-        Tag[] throwsMethodTags = methodDoc.tags(Kind.THROWS.tagName);
-        for (Tag throwsMethodTag : throwsMethodTags) {
+
+        Map<String, String> exceptionMap = new HashMap<>();
+        for (Tag throwsMethodTag : methodDoc.tags(Kind.THROWS.tagName)) {
             if (throwsMethodTag instanceof ThrowsTag) {
                 ThrowsTag throwsTag = (ThrowsTag) throwsMethodTag;
-                MicroThrows microThrows = new MicroThrows();
-                microThrows.setName(throwsTag.exceptionName());
-                microThrows.setTitle(throwsTag.exceptionComment());
-                ClassDoc throwsClassDoc = throwsTag.exception();
-                if (throwsClassDoc != null) {
-                    microThrows.setQualifiedName(throwsClassDoc.toString());
-                }
-                microThrowsList.add(microThrows);
+                exceptionMap.put(throwsTag.exceptionName(), throwsTag.exceptionComment());
             }
+        }
+
+        for (Class<?> clz : method.getExceptionTypes()) {
+            MicroThrows microThrows = new MicroThrows();
+            microThrows.setName(clz.getSimpleName());
+            microThrows.setQualifiedName(clz.getName());
+            microThrows.setTitle(exceptionMap.get(clz.getSimpleName()));
+            microThrowsList.add(microThrows);
         }
 
         return microThrowsList;
