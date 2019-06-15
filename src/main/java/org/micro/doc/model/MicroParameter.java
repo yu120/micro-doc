@@ -3,28 +3,33 @@ package org.micro.doc.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.io.Serializable;
 
+/**
+ * Micro Parameter
+ *
+ * @author lry
+ */
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
+@ToString
 public class MicroParameter implements Serializable {
 
     /**
-     * 名称
+     * Parameter name
      */
     private String name;
     /**
-     * 标题
+     * Parameter class title
      */
     private String title;
     /**
-     * 类型
+     * Parameter class type
      */
     private String type;
     /**
-     * 类型名称
+     * Parameter class type name
      */
     private String typeName;
 

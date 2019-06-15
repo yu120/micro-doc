@@ -73,12 +73,18 @@ public class MicroMethod implements Serializable {
     /**
      * Method doc has deprecated
      */
-    private Boolean isDeprecated;
+    private Boolean isDeprecated = false;
+    private Boolean isPublic = false;
+    private Boolean isProtected = false;
+    private Boolean isPrivate = false;
+    private Boolean isPackagePrivate = false;
+    private Boolean isStatic = false;
+    private Boolean isFinal = false;
 
     /**
      * 返回模型
      */
-    private MicroReturn returns;
+    private MicroReturn returnInfo;
     /**
      * 参数清单
      */

@@ -6,26 +6,28 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
+/**
+ * Micro Throws
+ *
+ * @author lry
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class MicroThrows implements Serializable {
 
     /**
-     * 名称
+     * Throws name
      */
     private String name;
     /**
-     * 标题
+     * Throws qualified name
+     */
+    private String qualifiedName;
+
+    /**
+     * Throws title
      */
     private String title;
-    /**
-     * 类型
-     */
-    private String type;
-    /**
-     * 类型名称
-     */
-    private String typeName;
 
 }

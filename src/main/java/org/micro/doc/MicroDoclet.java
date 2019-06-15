@@ -45,7 +45,7 @@ public class MicroDoclet extends Doclet {
                 // 构建MicroMethod模型
                 MicroMethod microMethod = buildMethod(methodDoc);
                 // 读取可能会抛出的异常
-                microMethod.setReturns(readReturn(methodDoc));
+                microMethod.setReturnInfo(readReturn(methodDoc));
                 // 读取可能会抛出的异常
                 microMethod.setThrowses(readThrows(methodDoc));
                 // 读取参数描述
@@ -187,6 +187,12 @@ public class MicroDoclet extends Doclet {
         }
 
         microMethod.setIsDeprecated(isDeprecated(methodDoc.annotations()));
+        microMethod.setIsPublic(methodDoc.isPublic());
+        microMethod.setIsProtected(methodDoc.isProtected());
+        microMethod.setIsPrivate(methodDoc.isPrivate());
+        microMethod.setIsPackagePrivate(methodDoc.isPackagePrivate());
+        microMethod.setIsStatic(methodDoc.isStatic());
+        microMethod.setIsFinal(methodDoc.isFinal());
 
         return microMethod;
     }
@@ -195,7 +201,7 @@ public class MicroDoclet extends Doclet {
      * 读取参数列表
      *
      * @param methodDoc {@link MethodDoc}
-     * @return {@link List< MicroParameter >}
+     * @return {@link List<MicroParameter>}
      */
     private static List<MicroParameter> readParameters(MethodDoc methodDoc) {
         List<MicroParameter> parameters = new ArrayList<>();
@@ -229,11 +235,14 @@ public class MicroDoclet extends Doclet {
         MicroReturn microReturn = new MicroReturn();
         // 读取返回参数
         String returnType = methodDoc.returnType().toString();
-        microReturn.setType(returnType);
+        microReturn.setName(returnType);
         if (returnType.lastIndexOf(Constants.DOT) > 0) {
-            microReturn.setTypeName(returnType.substring(returnType.lastIndexOf(Constants.DOT) + 1));
+            microReturn.setQualifiedName(returnType.substring(returnType.lastIndexOf(Constants.DOT) + 1));
         } else {
-            microReturn.setTypeName(returnType);
+            microReturn.setQualifiedName(returnType);
+        }
+        if ("void".equals(returnType)) {
+            microReturn.setIsVoid(true);
         }
 
         // 设置返回标题
@@ -249,7 +258,7 @@ public class MicroDoclet extends Doclet {
      * 读取可能抛出的异常
      *
      * @param methodDoc {@link MethodDoc}
-     * @return {@link List< MicroThrows >}
+     * @return {@link List<MicroThrows>}
      */
     private static List<MicroThrows> readThrows(MethodDoc methodDoc) {
         List<MicroThrows> microThrowsList = new ArrayList<>();
@@ -262,8 +271,7 @@ public class MicroDoclet extends Doclet {
                 microThrows.setTitle(throwsTag.exceptionComment());
                 ClassDoc throwsClassDoc = throwsTag.exception();
                 if (throwsClassDoc != null) {
-                    microThrows.setType(throwsClassDoc.toString());
-                    microThrows.setTypeName(throwsClassDoc.typeName());
+                    microThrows.setQualifiedName(throwsClassDoc.toString());
                 }
                 microThrowsList.add(microThrows);
             }

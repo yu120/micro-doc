@@ -77,17 +77,17 @@ public class MicroClass implements Serializable {
     /**
      * Class doc has deprecated
      */
-    private Boolean isDeprecated;
-    private Boolean isClass;
-    private Boolean isOrdinaryClass;
-    private Boolean isEnum;
-    private Boolean isInterface;
-    private Boolean isException;
-    private Boolean isError;
-    private Boolean isThrowable;
-    private Boolean isAbstract;
-    private Boolean isSynthetic;
-    private Boolean isIncluded;
+    private Boolean isDeprecated = false;
+    private Boolean isClass = false;
+    private Boolean isOrdinaryClass = false;
+    private Boolean isEnum = false;
+    private Boolean isInterface = false;
+    private Boolean isException = false;
+    private Boolean isError = false;
+    private Boolean isThrowable = false;
+    private Boolean isAbstract = false;
+    private Boolean isSynthetic = false;
+    private Boolean isIncluded = false;
 
     /**
      * Class method

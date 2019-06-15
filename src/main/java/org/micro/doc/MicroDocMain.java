@@ -23,7 +23,14 @@ public class MicroDocMain {
 
     public static String PATH = "";
 
-    public static void main(String[] args) {
+    /**
+     * dddd
+     *
+     * @param args
+     * @throws Exception aaaaa
+     * @throws NullPointerException bbb
+     */
+    public static void main(String[] args) throws Exception, NullPointerException {
         String realRootPath = MicroDocMain.class.getResource("/").getPath();
         realRootPath = realRootPath.substring(0, realRootPath.lastIndexOf("/target/classes"));
         execute(realRootPath);

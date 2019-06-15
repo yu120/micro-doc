@@ -1,27 +1,34 @@
 package org.micro.doc.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.io.Serializable;
 
+/**
+ * Micro Return
+ *
+ * @author lry
+ */
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
+@ToString
 public class MicroReturn implements Serializable {
-    
+
     /**
-     * 标题
+     * Method return type {@return} title
      */
     private String title;
     /**
-     * 类型
+     * Method return type name
      */
-    private String type;
+    private String name;
     /**
-     * 类型名称
+     * Method return type qualified name
      */
-    private String typeName;
+    private String qualifiedName;
+    /**
+     * Method is return void
+     */
+    private Boolean isVoid = false;
 
 }
