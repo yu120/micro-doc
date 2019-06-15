@@ -22,12 +22,16 @@ import java.util.List;
 public class MicroDocMain {
 
     public static String PATH = "";
+    /**
+     * 是否只扫描Public方法
+     */
+    public static boolean SCAN_PUBLIC = true;
 
     /**
      * dddd
      *
      * @param args
-     * @throws Exception aaaaa
+     * @throws Exception            aaaaa
      * @throws NullPointerException bbb
      */
     public static void main(String[] args) throws Exception, NullPointerException {

@@ -35,24 +35,8 @@ public class MicroDoclet extends Doclet {
         List<MicroClass> microClasses = new ArrayList<>();
         ClassDoc[] classes = root.classes();
         for (ClassDoc classDoc : classes) {
-            // 构建MicroClass模型
+            // Step 1: 构建MicroClass模型
             MicroClass microClass = buildClass(classDoc);
-            for (MethodDoc methodDoc : classDoc.methods()) {
-                // 只扫描public的方法
-                if (!methodDoc.isPublic()) {
-                    continue;
-                }
-
-                // 构建MicroMethod模型
-                MicroMethod microMethod = buildMethod(methodDoc);
-                // 读取可能会抛出的异常
-                microMethod.setReturnInfo(readReturn(methodDoc));
-                // 读取可能会抛出的异常
-                microMethod.setThrowses(readThrows(methodDoc));
-                // 读取参数描述
-                microMethod.setParameters(readParameters(methodDoc));
-                microClass.getMethods().add(microMethod);
-            }
             microClasses.add(microClass);
             lines.add(JSON.toJSONString(microClass));
         }
@@ -138,7 +122,19 @@ public class MicroDoclet extends Doclet {
             microClass.setIsSynthetic(implClassDoc.isSynthetic());
         }
 
-        microClass.setMethods(new ArrayList<>());
+        // Step 2: 获取方法
+        List<MicroMethod> methods = new ArrayList<>();
+        for (MethodDoc methodDoc : classDoc.methods()) {
+            // 是否只扫描public的方法
+            if (MicroDocMain.SCAN_PUBLIC && !methodDoc.isPublic()) {
+                continue;
+            }
+
+            // 构建MicroMethod模型
+            MicroMethod microMethod = buildMethod(methodDoc);
+            methods.add(microMethod);
+        }
+        microClass.setMethods(methods);
         return microClass;
     }
 
@@ -196,6 +192,12 @@ public class MicroDoclet extends Doclet {
         microMethod.setIsStatic(methodDoc.isStatic());
         microMethod.setIsFinal(methodDoc.isFinal());
 
+        // Step 3: 读取可能会抛出的异常
+        microMethod.setReturnInfo(readReturn(methodDoc));
+        // Step 4: 读取可能会抛出的异常
+        microMethod.setThrowses(readThrows(methodDoc));
+        // Step 5: 读取参数描述
+        microMethod.setParameters(readParameters(methodDoc));
         return microMethod;
     }
 
