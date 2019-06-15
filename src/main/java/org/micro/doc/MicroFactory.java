@@ -118,41 +118,26 @@ public class MicroFactory {
                 continue;
             }
 
-            String methodId = methodDoc.toString();
+            String methodId = methodDoc.toString().replace(" ", "");
             Method method = methodMap.get(methodId);
 
             // 构建MicroMethod模型
-            MicroMethod microMethod = this.buildMethod(methodDoc);
+            MicroMethod microMethod = this.buildMethod(method, methodDoc);
             methods.add(microMethod);
         }
         microClass.setMethods(methods);
         return microClass;
     }
 
-    public void abc() throws Exception {
-
-    }
-
-    public void abc(String a) throws Exception {
-
-    }
-
-    public void abc(String a, String b) throws Exception {
-
-    }
-
-    public void abc(int a) throws Exception {
-
-    }
-
     /**
      * 构建方法模型
      *
+     * @param method    {@link Method}
      * @param methodDoc {@link MethodDoc}
      * @return {@link MicroMethod}
      * @serialData
      */
-    private MicroMethod buildMethod(MethodDoc methodDoc) {
+    private MicroMethod buildMethod(Method method, MethodDoc methodDoc) {
         MicroMethod microMethod = new MicroMethod();
         microMethod.setName(methodDoc.name());
         microMethod.setQualifiedName(methodDoc.qualifiedName());
@@ -204,17 +189,18 @@ public class MicroFactory {
         // Step 4: 读取可能会抛出的异常
         microMethod.setThrowses(this.readThrows(methodDoc));
         // Step 5: 读取参数描述
-        microMethod.setParameters(this.readParameters(methodDoc));
+        microMethod.setParameters(this.readParameters(method, methodDoc));
         return microMethod;
     }
 
     /**
      * 读取参数列表
      *
+     * @param method    {@link Method}
      * @param methodDoc {@link MethodDoc}
      * @return {@link List<MicroParameter>}
      */
-    private List<MicroParameter> readParameters(MethodDoc methodDoc) {
+    private List<MicroParameter> readParameters(Method method, MethodDoc methodDoc) {
         List<MicroParameter> parameters = new ArrayList<>();
 
         // 读取参数描述
@@ -224,13 +210,19 @@ public class MicroFactory {
             paramTagMap.put(paramTag.parameterName(), paramTag.parameterComment());
         }
 
-        for (Parameter parameter : methodDoc.parameters()) {
-            MicroParameter microParameter = new MicroParameter();
-            microParameter.setName(parameter.name());
-            microParameter.setTitle(paramTagMap.get(parameter.name()));
-            microParameter.setType(parameter.type().toString());
-            microParameter.setTypeName(parameter.typeName());
-            parameters.add(microParameter);
+        if (methodDoc.parameters() != null) {
+            for (Parameter parameter : methodDoc.parameters()) {
+                MicroParameter microParameter = new MicroParameter();
+                microParameter.setName(parameter.name());
+                microParameter.setTitle(paramTagMap.get(parameter.name()));
+                microParameter.setType(parameter.typeName());
+                String typeName = parameter.typeName();
+                if (typeName.indexOf(".") > 0) {
+                    typeName = typeName.substring(typeName.lastIndexOf(".") + 1);
+                }
+                microParameter.setTypeName(typeName);
+                parameters.add(microParameter);
+            }
         }
 
         return parameters;
@@ -313,7 +305,7 @@ public class MicroFactory {
     private Class<?> getClassDocClass(ClassDoc classDoc) {
         String className = classDoc.qualifiedTypeName();
         try {
-            return Class.forName(className);
+            return Class.forName(className, true, this.getClass().getClassLoader());
         } catch (Exception e) {
             throw new IllegalArgumentException(className, e);
         }
@@ -331,22 +323,13 @@ public class MicroFactory {
     private Map<String, Method> getClassDocMethods(Class<?> classDocClass) {
         Map<String, Method> methodMap = new HashMap<>();
         String classDocClassName = classDocClass.getName();
-        Method[] classDocMethods = classDocClass.getMethods();
+        Method[] classDocMethods = classDocClass.getDeclaredMethods();
         if (classDocMethods != null) {
             for (Method method : classDocMethods) {
-                StringBuilder sb = new StringBuilder(classDocClassName + "." + method.getName() + "(");
-                Class<?>[] parameterTypes = method.getParameterTypes();
-                if (parameterTypes.length > 0) {
-                    for (int i = 0; i < parameterTypes.length; i++) {
-                        Class<?> parameterType = parameterTypes[i];
-                        sb.append(parameterType.getName());
-                        if (i < parameterTypes.length - 1) {
-                            sb.append(",");
-                        }
-                    }
-                }
-                sb.append(")");
-                methodMap.put(sb.toString(), method);
+                String methodName = method.toString();
+                methodName = methodName.substring(0, methodName.lastIndexOf(")") + 1);
+                methodName = methodName.substring(methodName.lastIndexOf(" ") + 1);
+                methodMap.put(methodName.replace(" ", ""), method);
             }
         }
 
