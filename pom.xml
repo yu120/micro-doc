@@ -5,9 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.micro.doc</groupId>
-    <artifactId>micro-doc</artifactId>
+    <artifactId>micro-doc-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
 
     <properties>
         <commons-lang3.version>3.9</commons-lang3.version>
@@ -16,6 +16,11 @@
         <lombok.version>1.18.8</lombok.version>
         <fastjson.version>1.2.47</fastjson.version>
     </properties>
+
+    <modules>
+        <module>micro-doc-plugin</module>
+        <module>micro-doc-generate</module>
+    </modules>
 
     <dependencies>
         <dependency>
