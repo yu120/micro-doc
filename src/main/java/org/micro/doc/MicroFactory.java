@@ -6,6 +6,7 @@ import com.sun.tools.javadoc.ClassDocImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.micro.doc.model.*;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,6 +45,10 @@ public class MicroFactory {
      * @return {@link MicroClass}
      */
     private MicroClass buildClass(ClassDoc classDoc) {
+        Class<?> classDocClass = this.getClassDocClass(classDoc);
+        Map<String, Method> methodMap = getClassDocMethods(classDocClass);
+        String classDocClassName = classDocClass.getName();
+
         MicroClass microClass = new MicroClass();
         microClass.setName(classDoc.name());
         microClass.setQualifiedName(classDoc.qualifiedName());
@@ -113,12 +118,31 @@ public class MicroFactory {
                 continue;
             }
 
+            String methodId = methodDoc.toString();
+            Method method = methodMap.get(methodId);
+
             // 构建MicroMethod模型
             MicroMethod microMethod = this.buildMethod(methodDoc);
             methods.add(microMethod);
         }
         microClass.setMethods(methods);
         return microClass;
+    }
+
+    public void abc() throws Exception {
+
+    }
+
+    public void abc(String a) throws Exception {
+
+    }
+
+    public void abc(String a, String b) throws Exception {
+
+    }
+
+    public void abc(int a) throws Exception {
+
     }
 
     /**
@@ -284,6 +308,49 @@ public class MicroFactory {
         }
 
         return false;
+    }
+
+    private Class<?> getClassDocClass(ClassDoc classDoc) {
+        String className = classDoc.qualifiedTypeName();
+        try {
+            return Class.forName(className);
+        } catch (Exception e) {
+            throw new IllegalArgumentException(className, e);
+        }
+    }
+
+    private Class<?> getMethodDocClass(ClassDoc classDoc) {
+        String className = classDoc.qualifiedTypeName();
+        try {
+            return Class.forName(className);
+        } catch (Exception e) {
+            throw new IllegalArgumentException(className, e);
+        }
+    }
+
+    private Map<String, Method> getClassDocMethods(Class<?> classDocClass) {
+        Map<String, Method> methodMap = new HashMap<>();
+        String classDocClassName = classDocClass.getName();
+        Method[] classDocMethods = classDocClass.getMethods();
+        if (classDocMethods != null) {
+            for (Method method : classDocMethods) {
+                StringBuilder sb = new StringBuilder(classDocClassName + "." + method.getName() + "(");
+                Class<?>[] parameterTypes = method.getParameterTypes();
+                if (parameterTypes.length > 0) {
+                    for (int i = 0; i < parameterTypes.length; i++) {
+                        Class<?> parameterType = parameterTypes[i];
+                        sb.append(parameterType.getName());
+                        if (i < parameterTypes.length - 1) {
+                            sb.append(",");
+                        }
+                    }
+                }
+                sb.append(")");
+                methodMap.put(sb.toString(), method);
+            }
+        }
+
+        return methodMap;
     }
 
     private String getTitle(String commentText) {
