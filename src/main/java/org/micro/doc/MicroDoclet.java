@@ -45,7 +45,7 @@ public class MicroDoclet extends Doclet {
         // 写入隐藏文件
         if (!lines.isEmpty()) {
             try {
-                FileUtils.writeLines(new File(MicroDocMain.PATH), StandardCharsets.UTF_8.name(), lines, false);
+                FileUtils.writeLines(new File(Main.PATH), StandardCharsets.UTF_8.name(), lines, false);
             } catch (IOException e) {
                 log.error("The write lines is exception", e);
             }
@@ -126,7 +126,7 @@ public class MicroDoclet extends Doclet {
         List<MicroMethod> methods = new ArrayList<>();
         for (MethodDoc methodDoc : classDoc.methods()) {
             // 是否只扫描public的方法
-            if (MicroDocMain.SCAN_PUBLIC && !methodDoc.isPublic()) {
+            if (Main.SCAN_PUBLIC && !methodDoc.isPublic()) {
                 continue;
             }
 
