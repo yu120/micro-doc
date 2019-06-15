@@ -33,8 +33,6 @@ public class MicroDoclet extends Doclet {
             lines.add(JSON.toJSONString(microClass));
         }
 
-        System.out.println(JSON.toJSONString(microClasses));
-
         // 写入隐藏文件
         if (!lines.isEmpty()) {
             try {

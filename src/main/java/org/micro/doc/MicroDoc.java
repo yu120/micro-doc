@@ -1,12 +1,13 @@
 package org.micro.doc;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.micro.doc.model.MicroClass;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -58,19 +59,20 @@ public class MicroDoc {
         return com.sun.tools.javadoc.Main.execute(javaFiles.toArray(new String[0])) == 0;
     }
 
-    public static JSONArray readInfoJSON() {
-        JSONArray jsonArray = new JSONArray();
+    public static List<MicroClass> readInfo() {
+        List<MicroClass> microClassList = new ArrayList<>();
 
         try {
-            List<String> jsons = IOUtils.readLines(IOUtils.resourceToURL(Constants.INFO_JSON).openStream(), StandardCharsets.UTF_8.name());
-            for (String json : jsons) {
-                jsonArray.add(JSON.parseObject(json));
+            List<String> jsonList = IOUtils.readLines(IOUtils.resourceToURL(
+                    Constants.INFO_JSON).openStream(), StandardCharsets.UTF_8.name());
+            for (String json : jsonList) {
+                microClassList.add(JSON.parseObject(json, MicroClass.class));
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Not found file");
         }
 
-        return jsonArray;
+        return microClassList;
     }
 
 }
