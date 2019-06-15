@@ -81,8 +81,8 @@ public class MicroDoclet extends Doclet {
         microClass.setPackageName(classDoc.toString().replace(Constants.DOT + classDoc.name(), Constants.NULL_STR));
 
         String commentText = classDoc.commentText();
-        microClass.setTitle(commentText);
-        microClass.setIntro(commentText);
+        microClass.setTitle(getTitle(commentText));
+        microClass.setIntro(getIntro(commentText));
 
         Tag[] authorTags = classDoc.tags(Kind.AUTHOR.tagName);
         if (authorTags.length > 0) {
@@ -145,31 +145,48 @@ public class MicroDoclet extends Doclet {
      *
      * @param methodDoc {@link MethodDoc}
      * @return {@link MicroMethod}
+     * @serialData
      */
     private static MicroMethod buildMethod(MethodDoc methodDoc) {
         MicroMethod microMethod = new MicroMethod();
         microMethod.setName(methodDoc.name());
-        microMethod.setTitle(methodDoc.commentText());
-        microMethod.setDeprecated(false);
+        microMethod.setQualifiedName(methodDoc.qualifiedName());
+        microMethod.setSignature(methodDoc.toString());
 
-        // 设置作者
-        Tag[] authorMethodTags = methodDoc.tags(Kind.AUTHOR.tagName);
-        if (authorMethodTags.length > 0) {
-            microMethod.setAuthor(authorMethodTags[0].text());
+        String commentText = methodDoc.commentText();
+        microMethod.setTitle(getTitle(commentText));
+        microMethod.setIntro(getIntro(commentText));
+
+        Tag[] authorTags = methodDoc.tags(Kind.AUTHOR.tagName);
+        if (authorTags.length > 0) {
+            microMethod.setAuthor(authorTags[0].text());
         }
-        // 设置API笔记
-        Tag[] apiNoteMethodTags = methodDoc.tags(Constants.API_NOTE_TAG);
-        if (apiNoteMethodTags.length > 0) {
-            microMethod.setApiNote(apiNoteMethodTags[0].text());
+        Tag[] apiNoteTags = methodDoc.tags(MicroKind.API_NOTE.tagName);
+        if (apiNoteTags.length > 0) {
+            microMethod.setApiNote(apiNoteTags[0].text());
         }
-        // 设置日期
-        Tag[] sinceMethodTags = methodDoc.tags(Kind.SINCE.tagName);
-        if (sinceMethodTags.length > 0) {
-            microMethod.setSince(sinceMethodTags[0].text());
+        Tag[] implNoteTags = methodDoc.tags(MicroKind.IMPL_NOTE.tagName);
+        if (implNoteTags.length > 0) {
+            microMethod.setImplNote(implNoteTags[0].text());
+        }
+        Tag[] implSpecTags = methodDoc.tags(MicroKind.IMPL_SPEC.tagName);
+        if (implSpecTags.length > 0) {
+            microMethod.setImplSpec(implSpecTags[0].text());
+        }
+        Tag[] seeTags = methodDoc.tags(Kind.SEE.tagName);
+        if (seeTags.length > 0) {
+            microMethod.setSee(seeTags[0].text());
+        }
+        Tag[] sinceTags = methodDoc.tags(Kind.SINCE.tagName);
+        if (sinceTags.length > 0) {
+            microMethod.setSince(sinceTags[0].text());
+        }
+        Tag[] deprecatedTags = methodDoc.tags(Kind.DEPRECATED.tagName);
+        if (deprecatedTags.length > 0) {
+            microMethod.setDeprecated(deprecatedTags[0].text());
         }
 
-        // 校验是否被舍弃
-        microMethod.setDeprecated(isDeprecated(methodDoc.annotations()));
+        microMethod.setIsDeprecated(isDeprecated(methodDoc.annotations()));
 
         return microMethod;
     }
@@ -272,6 +289,14 @@ public class MicroDoclet extends Doclet {
         }
 
         return false;
+    }
+
+    private static String getTitle(String commentText) {
+        return commentText.indexOf("\n") > 0 ? commentText.substring(0, commentText.indexOf("\n")) : commentText;
+    }
+
+    private static String getIntro(String commentText) {
+        return commentText.indexOf("\n") > 0 ? commentText.substring(commentText.indexOf("\n")) : commentText;
     }
 
 }

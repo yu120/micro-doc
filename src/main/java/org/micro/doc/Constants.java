@@ -1,9 +1,9 @@
 package org.micro.doc;
 
-import java.io.File;
-
 /**
  * 常数定义
+ * 描述信息1
+ * 描述信息2
  *
  * @author lry
  */

@@ -1,41 +1,80 @@
 package org.micro.doc.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.io.Serializable;
 import java.util.List;
 
+/**
+ * Micro Method Model
+ *
+ * @author lry
+ */
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
+@ToString
 public class MicroMethod implements Serializable {
 
     /**
-     * 名称
+     * Method name
      */
     private String name;
     /**
-     * 标题
+     * Method qualified name
+     */
+    private String qualifiedName;
+    /**
+     * Method doc signature
+     */
+    private String signature;
+
+    /**
+     * Method doc title
      */
     private String title;
     /**
-     * 作者
+     * Method doc intro
+     **/
+    private String intro;
+
+    /**
+     * Method doc {@author}
      */
     private String author;
     /**
-     * API笔记
+     * Method doc {@serialData}
+     */
+    private String serialData;
+    /**
+     * Method doc {@apiNote}
      */
     private String apiNote;
     /**
-     * 日期
+     * Method doc {@implNote}
+     */
+    private String implNote;
+    /**
+     * Method doc {@implSpec}
+     */
+    private String implSpec;
+    /**
+     * Method doc {@see}
+     */
+    private String see;
+    /**
+     * Method doc {@since}
      */
     private String since;
     /**
-     * 是否舍弃
+     * Method doc {@deprecated}
      */
-    private Boolean deprecated;
+    private String deprecated;
+
+    /**
+     * Method doc has deprecated
+     */
+    private Boolean isDeprecated;
+
     /**
      * 返回模型
      */
