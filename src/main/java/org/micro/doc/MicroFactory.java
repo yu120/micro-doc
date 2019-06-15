@@ -22,12 +22,12 @@ public class MicroFactory {
     /**
      * Micro handler
      *
-     * @param root {@link RootDoc}
+     * @param rootDoc {@link RootDoc}
      * @return {@link Boolean}
      */
-    public List<MicroClass> handler(RootDoc root) {
+    public List<MicroClass> handler(RootDoc rootDoc) {
         List<MicroClass> microClasses = new ArrayList<>();
-        ClassDoc[] classes = root.classes();
+        ClassDoc[] classes = rootDoc.classes();
         for (ClassDoc classDoc : classes) {
             // Step 1: 构建MicroClass模型
             MicroClass microClass = this.buildClass(classDoc);
