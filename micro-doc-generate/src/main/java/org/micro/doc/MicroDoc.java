@@ -64,7 +64,7 @@ public class MicroDoc {
 
         try {
             List<String> jsonList = IOUtils.readLines(IOUtils.resourceToURL(
-                    Constants.INFO_JSON).openStream(), StandardCharsets.UTF_8.name());
+                    Constants.MICRO_DOC_JSON).openStream(), StandardCharsets.UTF_8.name());
             for (String json : jsonList) {
                 microClassList.add(JSON.parseObject(json, MicroClass.class));
             }
