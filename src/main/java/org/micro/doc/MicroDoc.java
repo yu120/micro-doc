@@ -39,7 +39,7 @@ public class MicroDoc {
         execute(realRootPath);
     }
 
-    public static void execute(String realRootPath) {
+    private static void execute(String realRootPath) {
         String realPath = realRootPath + "/src/main/java";
         log.info("The real path is: {}", realPath);
         PATH = realRootPath + Constants.TARGET_CLASSES;
